@@ -13,7 +13,7 @@ export const getUserProfile = async (req, res) => {
       success: true,
       data: { user }
     });
-  } catch (error) {
+  } catch (error) {+
     res.status(500).json({
       success: false,
       message: error.message || 'Error fetching user profile'

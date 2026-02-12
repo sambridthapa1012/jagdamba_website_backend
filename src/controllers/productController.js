@@ -1,4 +1,5 @@
 import Product from '../models/Product.js';
+
 /**
  * Create product with image upload
  * POST /api/products
@@ -17,11 +18,12 @@ export const createProduct = async (req, res) => {
       specifications
     } = req.body;
 
-    // Images from multer
-    const images = req.files
-      ? req.files.map(file => `/uploads/products/${file.filename}`)
-      : [];
-      console.log('images:', req.files);
+    // ✅ Cloudinary image URLs
+    const images = req.files.map(file => ({
+  url: file.path,
+  public_id: file.filename
+}));
+
     const product = await Product.create({
       name,
       description,
@@ -31,13 +33,13 @@ export const createProduct = async (req, res) => {
       brand,
       stock,
       featured,
-      images: images || [],
+      images,
       specifications
     });
 
     res.status(201).json({
       success: true,
-      message: 'Product created successfully',
+      message: "Product created successfully",
       data: { product }
     });
   } catch (error) {
@@ -72,12 +74,30 @@ export const getProducts = async (req, res) => {
     const query = { isActive: true };
 
     if (category) {
-      query.category = category.toLowerCase();
+      query.category = category;
     }
 
-    if (subcategory) {
-      query.subcategory = subcategory.toLowerCase();
+if (subcategory) {
+  let subValue = subcategory;
+
+  // If subcategory comes as array string → parse it
+  if (subcategory.startsWith("[")) {
+    try {
+      const parsed = JSON.parse(subcategory);
+      subValue = Array.isArray(parsed) ? parsed[0] : parsed;
+    } catch (err) {
+      console.log("Subcategory parse error:", err);
     }
+  }
+
+  query.subcategory = {
+    $regex: new RegExp(`^${subValue}$`, "i")
+  };
+}
+
+console.log("Query subcategory:", subcategory);
+
+
 
     if (brand) {
       query.brand = new RegExp(brand, 'i');
@@ -118,6 +138,8 @@ export const getProducts = async (req, res) => {
 
     // Execute query
     const products = await Product.find(query)
+    .populate("category")       // populate category reference
+  
       .sort(sortBy)
       .skip(skip)
       .limit(limitNum);
@@ -198,7 +220,7 @@ export const getProductsByCategory = async (req, res) => {
     const { page = 1, limit = 12, sort } = req.query;
 
     const query = {
-      category: category.toLowerCase(),
+      category: category,
       isActive: true
     };
 

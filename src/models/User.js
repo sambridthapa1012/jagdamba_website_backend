@@ -1,5 +1,7 @@
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import crypto from "crypto";
+
 
 /**
  * User Schema
@@ -52,11 +54,32 @@ const userSchema = new mongoose.Schema(
     isActive: {
       type: Boolean,
       default: true
-    }
+    },
+    token:{
+    type: String,
+
+    },
+     resetPasswordToken: {
+   type: String,
   },
-  {
+  resetPasswordExpire: {
+    type: Date,
+  },
+  otp: {
+    type: String,
+  },
+  otpExpire: {
+    type: Date,   
+  }, 
+  lastLogin: {
+  type: Date,
+} 
+  
+  },
+      {
     timestamps: true
-  }
+  },
+ 
 );
 
 /**
@@ -81,6 +104,26 @@ userSchema.pre('save', async function (next) {
 userSchema.methods.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+userSchema.methods.getResetPasswordToken = function () {
+  const resetToken = crypto.randomBytes(32).toString("hex");
+
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+
+  this.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 mins
+
+  return resetToken;
+};
+// const otp=Math.floor(100000 + Math.random() * 900000).toString();
+//   const otpExpire=Date.now() + 10 * 60 * 1000;// 10 minutes from now
+//   user.otp=otp;
+//   user.otpExpire=otpExpire;
+
+
+
+
 
 const User = mongoose.model('User', userSchema);
 
