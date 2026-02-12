@@ -26,25 +26,24 @@ const productSchema = new mongoose.Schema(
       type: Number,
       min: [0, 'Original price cannot be negative']
     },
-    category: {
-      type: String,
-      required: [true, 'Please provide a product category'],
-      trim: true,
-      lowercase: true
-    },
-    subcategory: {
-      type: String,
-      trim: true,
-      lowercase: true
-    },
+category: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Category", // Reference Category collection
+    required: true
+  },
+  subcategory: {
+    type: String,
+  },
     brand: {
       type: String,
       trim: true
     },
-    images: {
-      type: [String],
-      default: []
-    },
+    images: [
+    {
+      url: {type: String},
+      public_id: { type: String},
+    }
+  ],
     stock: {
       type: Number,
       required: [true, 'Please provide stock quantity'],
@@ -73,6 +72,10 @@ const productSchema = new mongoose.Schema(
       default: true
     },
     featured: {
+      type: Boolean,
+      default: false
+    },
+     bestdeals: {
       type: Boolean,
       default: false
     },
