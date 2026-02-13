@@ -1,4 +1,4 @@
-import BulkOrder from "../models/bulkorder.js";
+import BulkOrder from "../models/bulkOrder.js";
 
 /**
  * @desc   Create new bulk order request
