@@ -12,7 +12,7 @@ import cartRoutes from "../src/routes/cartRoutes.js";
 import orderRoutes from "../src/routes/orderRoutes.js";
 import adminRoutes from "../src/routes/adminRoutes.js";
 import bulkOrderRoutes from "../src/routes/bulkOrderRoutes.js";
-import chatbotRoutes from "../src/routes/chatbotRoutes.js";
+// import chatbotRoutes from "../src/routes/chatbotRoutes.js";
 import invoiceRoutes from "../src/routes/invoiceRoutes.js";
 import categoryRoutes from "../src/routes/CategoryRoutes.js";
 
