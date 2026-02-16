@@ -49,7 +49,7 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/bulk-orders", bulkOrderRoutes);
-app.use("/api/chatbot", chatbotRoutes);
+//app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/categories", categoryRoutes);
 
