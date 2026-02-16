@@ -38,6 +38,12 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+app.get("/", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "Welcome to Jagadamba API",
+  });
+}
 
 /* ============================
    🔌 API ROUTES
