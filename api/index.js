@@ -1,20 +1,20 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import connectDB from "../config/database.js";
-import { errorHandler } from "../middleware/errorHandler.js";
+import connectDB from "../src/config/database.js";
+import { errorHandler } from "../src/middleware/errorHandler.js";
 
 // Routes
-import authRoutes from "../routes/authRoutes.js";
-import userRoutes from "../routes/userRoutes.js";
-import productRoutes from "../routes/productRoutes.js";
-import cartRoutes from "../routes/cartRoutes.js";
-import orderRoutes from "../routes/orderRoutes.js";
-import adminRoutes from "../routes/adminRoutes.js";
-import bulkOrderRoutes from "../routes/bulkOrderRoutes.js";
-import chatbotRoutes from "../routes/chatbotRoutes.js";
-import invoiceRoutes from "../routes/invoiceRoutes.js";
-import categoryRoutes from "../routes/CategoryRoutes.js";
+import authRoutes from "../src/routes/authRoutes.js";
+import userRoutes from "../src/routes/userRoutes.js";
+import productRoutes from "../src/routes/productRoutes.js";
+import cartRoutes from "../src/routes/cartRoutes.js";
+import orderRoutes from "../src/routes/orderRoutes.js";
+import adminRoutes from "../src/routes/adminRoutes.js";
+import bulkOrderRoutes from "../src/routes/bulkOrderRoutes.js";
+import chatbotRoutes from "../src/routes/chatbotRoutes.js";
+import invoiceRoutes from "../src/routes/invoiceRoutes.js";
+import categoryRoutes from "../src/routes/CategoryRoutes.js";
 
 dotenv.config();
 
