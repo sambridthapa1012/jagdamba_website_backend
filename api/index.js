@@ -12,7 +12,6 @@ import cartRoutes from "../src/routes/cartRoutes.js";
 import orderRoutes from "../src/routes/orderRoutes.js";
 import adminRoutes from "../src/routes/adminRoutes.js";
 import bulkOrderRoutes from "../src/routes/bulkOrderRoutes.js";
-// import chatbotRoutes from "../src/routes/chatbotRoutes.js";
 import invoiceRoutes from "../src/routes/invoiceRoutes.js";
 import categoryRoutes from "../src/routes/CategoryRoutes.js";
 
@@ -21,9 +20,8 @@ dotenv.config();
 const app = express();
 
 /* ============================
-   🌐 GLOBAL MIDDLEWARE
+   🌐 MIDDLEWARE
 ============================ */
-
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
@@ -38,12 +36,13 @@ app.get("/api/health", (req, res) => {
     timestamp: new Date().toISOString(),
   });
 });
+
 app.get("/", (req, res) => {
   res.status(200).json({
     success: true,
     message: "Welcome to Jagadamba API",
   });
-}
+});
 
 /* ============================
    🔌 API ROUTES
@@ -55,7 +54,6 @@ app.use("/api/cart", cartRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/bulk-orders", bulkOrderRoutes);
-//app.use("/api/chatbot", chatbotRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/categories", categoryRoutes);
 
@@ -75,17 +73,22 @@ app.use("*", (req, res) => {
 app.use(errorHandler);
 
 /* ============================
-   🗄️ CONNECT DB (NO listen())
+   🗄️ CONNECT DB & START SERVER
 ============================ */
+const startServer = async () => {
+  try {
+    await connectDB(); // <-- wait for MongoDB to fully connect
+    console.log("✅ MongoDB is ready");
 
-connectDB().catch((err) => {
-  console.error("DB connection error:", err);
-});
-if (process.env.NODE_ENV !== "production") {
-  const PORT = process.env.PORT || 5000;
-  app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
-  });
-}
+    const PORT = process.env.PORT || 5000;
+    app.listen(PORT, () => {
+      console.log(`🚀 Server running on port ${PORT}`);
+    });
+  } catch (err) {
+    console.error("❌ Failed to connect to DB", err);
+  }
+};
+
+startServer();
 
 export default app;
