@@ -48,7 +48,7 @@ export const register = async (req, res) => {
           email: user.email,
           role: user.role,
           phone: user.phone,
-          token: user.token,
+         
           
         },
         token
