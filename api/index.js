@@ -27,16 +27,21 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 /* ============================
-   🔥 CONNECT TO DATABASE
+   🔥 DATABASE CONNECTION FOR SERVERLESS
 ============================ */
-try {
-  // Top-level await ensures DB is ready before routes are registered
-  await connectDB();
-  console.log("✅ MongoDB connected and ready");
-} catch (err) {
-  console.error("❌ Failed to connect to MongoDB:", err);
-  process.exit(1); // Stop server if DB connection fails
-}
+// Middleware to ensure DB connection before any route
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    console.error("❌ Failed to connect to MongoDB:", err);
+    return res.status(500).json({
+      success: false,
+      message: "Database connection failed",
+    });
+  }
+});
 
 /* ============================
    ❤️ HEALTH CHECK
