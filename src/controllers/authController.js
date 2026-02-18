@@ -10,6 +10,8 @@ import sendOTPMail from '../utils/sendOTPMail.js';
  */
 export const register = async (req, res) => {
   try {
+        await connectDB(); // 🔥 VERY IMPORTANT
+
     const { firstName, lastName, email, password, phone } = req.body;
 
     // Check if user already exists
@@ -66,6 +68,8 @@ export const register = async (req, res) => {
  */
 export const login = async (req, res) => {
   try {
+        await connectDB(); // 🔥 VERY IMPORTANT
+
     const { email, password } = req.body;
 
     // Validate input
@@ -137,6 +141,8 @@ await user.save({ validateBeforeSave: false });
 // controllers/authController.js (snippet)
 export const forgotPassword = async (req, res) => {
   try {
+        await connectDB(); // 🔥 VERY IMPORTANT
+
     const { email } = req.body;
     if (!email) {
       return res.status(400).json({ success: false, message: "Email is required" });
@@ -188,6 +194,8 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const verifyOTP = async (req, res) => {
+      await connectDB(); // 🔥 VERY IMPORTANT
+
   const { email, otp } = req.body;
 
   const user = await User.findOne({
@@ -218,6 +226,8 @@ export const verifyOTP = async (req, res) => {
 
 
 export const resetPassword = async (req, res) => {
+      await connectDB(); // 🔥 VERY IMPORTANT
+
   const hashedToken = crypto
     .createHash("sha256")
     .update(req.params.token)
@@ -263,6 +273,8 @@ export const resetPassword = async (req, res) => {
  */
 export const getMe = async (req, res) => {
   try {
+        await connectDB(); // 🔥 VERY IMPORTANT
+
     const user = await User.findById(req.user.id);
 
     res.status(200).json({

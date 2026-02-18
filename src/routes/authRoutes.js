@@ -13,6 +13,7 @@ const router = express.Router();
  * @access  Public
  */
 router.post(
+  
   '/register',
   [
     body('firstName')
