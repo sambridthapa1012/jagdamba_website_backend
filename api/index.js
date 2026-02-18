@@ -19,51 +19,36 @@ dotenv.config();
 
 const app = express();
 
-/* ============================
-   🌐 MIDDLEWARE
-============================ */
+// 🌐 MIDDLEWARE
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
-/* ============================
-   🔥 DATABASE CONNECTION FOR SERVERLESS
-============================ */
-// Middleware to ensure DB connection before any route
+// 🔥 SERVERLESS DB CONNECT (connect once per lambda)
+let dbConnected = false;
 app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    console.error("❌ Failed to connect to MongoDB:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Database connection failed",
-    });
+  if (!dbConnected) {
+    try {
+      await connectDB();
+      dbConnected = true;
+      console.log("✅ MongoDB ready for requests");
+    } catch (err) {
+      console.error("❌ DB connection failed:", err);
+      return res.status(500).json({ success: false, message: "Database connection failed" });
+    }
   }
+  next();
 });
 
-/* ============================
-   ❤️ HEALTH CHECK
-============================ */
-app.get("/api/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Server is running",
-    timestamp: new Date().toISOString(),
-  });
+// ❤️ HEALTH CHECK
+app.get("/api/health", (_, res) => {
+  res.status(200).json({ success: true, message: "Server is running", timestamp: new Date().toISOString() });
+});
+app.get("/", (_, res) => {
+  res.status(200).json({ success: true, message: "Welcome to Jagadamba API" });
 });
 
-app.get("/", (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "Welcome to Jagadamba API",
-  });
-});
-
-/* ============================
-   🔌 API ROUTES
-============================ */
+// 🔌 API ROUTES
 app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
@@ -74,19 +59,10 @@ app.use("/api/bulk-orders", bulkOrderRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/categories", categoryRoutes);
 
-/* ============================
-   ❌ 404 HANDLER
-============================ */
-app.use((req, res) => {
-  res.status(404).json({
-    success: false,
-    message: "Route not found",
-  });
-});
+// ❌ 404 HANDLER
+app.use((req, res) => res.status(404).json({ success: false, message: "Route not found" }));
 
-/* ============================
-   🚨 GLOBAL ERROR HANDLER
-============================ */
+// 🚨 GLOBAL ERROR HANDLER
 app.use(errorHandler);
 
 export default app;
