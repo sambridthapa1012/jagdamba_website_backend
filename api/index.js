@@ -1,7 +1,9 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import { dbConnectMiddleware } from "../src/middleware/dbConnect.js";
 import connectDB from "../src/config/database.js";
+
 import { errorHandler } from "../src/middleware/errorHandler.js";
 
 // Routes
@@ -22,6 +24,8 @@ const app = express();
 app.use(cors());
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
+// ✅ Ensure DB connected before any route
+app.use(dbConnectMiddleware);
 
 // ❤️ HEALTH CHECK
 app.get("/api/health", (_, res) => {
@@ -56,17 +60,17 @@ app.use((req, res) =>
 app.use(errorHandler);
 
 // 🔥 START SERVER AFTER DB CONNECTION
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
 
-async function startServer() {
-  try {
-    await connectDB(); // wait for DB connection before accepting requests
-    app.listen(PORT, () =>
-      console.log(`🚀 Server running on port ${PORT}`)
-    );
-  } catch (err) {
-    console.error("❌ Failed to start server:", err);
-  }
-}
+// async function startServer() {
+//   try {
+//     await connectDB(); // wait for DB connection before accepting requests
+//     app.listen(PORT, () =>
+//       console.log(`🚀 Server running on port ${PORT}`)
+//     );
+//   } catch (err) {
+//     console.error("❌ Failed to start server:", err);
+//   }
+// }
 
-startServer();
+// startServer();
