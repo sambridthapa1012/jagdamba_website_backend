@@ -10,3 +10,4 @@ export const dbConnectMiddleware = async (req, res, next) => {
     return res.status(500).json({ success: false, message: "Database connection failed" });
   }
 };
+export default dbConnectMiddleware;
