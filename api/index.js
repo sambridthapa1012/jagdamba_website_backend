@@ -25,10 +25,21 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 // 🔥 SERVERLESS DB CONNECT (connect once per lambda)
-// 🔥 Connect DB once per lambda
-connectDB().catch((err) => {
-  console.error("❌ Initial DB connection failed:", err);
+let dbConnected = false;
+app.use(async (req, res, next) => {
+  if (!dbConnected) {
+    try {
+      await connectDB();
+      dbConnected = true;
+      console.log("✅ MongoDB ready for requests");
+    } catch (err) {
+      console.error("❌ DB connection failed:", err);
+      return res.status(500).json({ success: false, message: "Database connection failed" });
+    }
+  }
+  next();
 });
+
 // ❤️ HEALTH CHECK
 app.get("/api/health", (_, res) => {
   res.status(200).json({ success: true, message: "Server is running", timestamp: new Date().toISOString() });
