@@ -27,21 +27,16 @@ app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true, limit: "10mb" }));
 
 /* ============================
-   🔥 DATABASE CONNECTION
-   (VERY IMPORTANT FOR VERCEL)
+   🔥 CONNECT TO DATABASE
 ============================ */
-app.use(async (req, res, next) => {
-  try {
-    await connectDB(); // connect on every cold start
-    next();
-  } catch (error) {
-    console.error("❌ DB Connection Failed:", error);
-    res.status(500).json({
-      success: false,
-      message: "Database connection failed",
-    });
-  }
-});
+try {
+  // Top-level await ensures DB is ready before routes are registered
+  await connectDB();
+  console.log("✅ MongoDB connected and ready");
+} catch (err) {
+  console.error("❌ Failed to connect to MongoDB:", err);
+  process.exit(1); // Stop server if DB connection fails
+}
 
 /* ============================
    ❤️ HEALTH CHECK

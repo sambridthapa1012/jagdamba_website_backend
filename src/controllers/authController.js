@@ -10,7 +10,6 @@ import sendOTPMail from '../utils/sendOTPMail.js';
  */
 export const register = async (req, res) => {
   try {
-        await connectDB(); // 🔥 VERY IMPORTANT
 
     const { firstName, lastName, email, password, phone } = req.body;
 
@@ -68,7 +67,6 @@ export const register = async (req, res) => {
  */
 export const login = async (req, res) => {
   try {
-        await connectDB(); // 🔥 VERY IMPORTANT
 
     const { email, password } = req.body;
 
@@ -141,7 +139,6 @@ await user.save({ validateBeforeSave: false });
 // controllers/authController.js (snippet)
 export const forgotPassword = async (req, res) => {
   try {
-        await connectDB(); // 🔥 VERY IMPORTANT
 
     const { email } = req.body;
     if (!email) {
@@ -194,7 +191,6 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const verifyOTP = async (req, res) => {
-      await connectDB(); // 🔥 VERY IMPORTANT
 
   const { email, otp } = req.body;
 
@@ -226,7 +222,6 @@ export const verifyOTP = async (req, res) => {
 
 
 export const resetPassword = async (req, res) => {
-      await connectDB(); // 🔥 VERY IMPORTANT
 
   const hashedToken = crypto
     .createHash("sha256")
@@ -273,7 +268,6 @@ export const resetPassword = async (req, res) => {
  */
 export const getMe = async (req, res) => {
   try {
-        await connectDB(); // 🔥 VERY IMPORTANT
 
     const user = await User.findById(req.user.id);
 
