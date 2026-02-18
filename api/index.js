@@ -58,6 +58,7 @@ app.use((req, res) =>
 
 // 🚨 GLOBAL ERROR HANDLER
 app.use(errorHandler);
+export default app;
 
 // 🔥 START SERVER AFTER DB CONNECTION
 // const PORT = process.env.PORT || 5000;
