@@ -13,10 +13,14 @@ const connectDB = async () => {
   if (cached.conn) return cached.conn;
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(uri, { bufferCommands: true }).then((mongooseInstance) => {
+    cached.promise = mongoose.connect(uri, {
+      bufferCommands: true, // queue queries until connected
+    })
+    .then((mongooseInstance) => {
       console.log("✅ MongoDB Connected");
       return mongooseInstance;
-    }).catch((err) => {
+    })
+    .catch((err) => {
       console.error("❌ MongoDB connection error:", err);
       throw err;
     });
